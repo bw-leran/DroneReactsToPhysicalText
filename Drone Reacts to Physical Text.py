@@ -33,11 +33,13 @@ def deactivateStream():
 
 def activateOCR():
 
+    #first screenshots the default area of the screen that the Tello drone's stream displays on
     sc = pyautogui.screenshot(region=(114,137,958,716))
     os.remove('C:\\Users\\Brandon Miller\\Documents\\Python Scripts\\WB\\raw_image.png')
     sc.save('C:\\Users\\Brandon Miller\\Documents\\Python Scripts\\WB\\raw_image.png')
     
     try:
+        #sharpens this screenshot and converts colors to grey to get the clearest image to detect text
         rawImage = Image.open('C:\\Users\\Brandon Miller\\Documents\\Python Scripts\\WB\\raw_image.png')
         rawImage = rawImage.filter(ImageFilter.SHARPEN)
         rawImage = rawImage.filter(ImageFilter.SHARPEN)
@@ -49,6 +51,7 @@ def activateOCR():
         detectedLangEng = detect(detectedTextEng)
         rawImage.show()
         try:
+            #executes if the text displayed is determined to be english
             if detectedLangEng == 'en':
                 print('EN Detected')
                 commands = detectedTextEng.lower()
@@ -86,6 +89,7 @@ def activateOCR():
                     else:
                         pass
             else:
+                #if the text is not in english, the program will try to determine if the text is Chinese
                 detectedTextChin = pytesseract.image_to_string(rawImage, lang = 'chi_tra')
                 detectedLangChin = detect(detectedTextChin)
                 if detectedLangChin == 'zh-cn':
@@ -128,6 +132,8 @@ def activateOCR():
 
     except:
         pass
+    #we use several try/except statements as there are a couple of errors that occur in different situations, so we just
+    #have the program continue to run despite these errors
 
 if __name__ == '__main__':
     drone.takeoff()
